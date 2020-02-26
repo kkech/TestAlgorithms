@@ -10,39 +10,23 @@ class Test:
 
   def __init__(self):
       self.result = {"result": []}
-      print("init")
 
   def connectToDbAndLoadToPandas(self):
-      print("start")
-      # engine = db.create_engine('postgresql://test:test@localhost:5432/test')
       engine = db.create_engine('sqlite:////Users/kechagiaskonstantinos/Downloads/uniJob/testsAlgor/datasets.db')
       connection = engine.connect()
-      # metadata = db.MetaData()
-      # test = db.Table('testtable', metadata, autoload=True, autoload_with=engine)
-      # print(test.columns.keys())
-
-      # self.pdResults = pd.read_sql_table("testtable", con=engine)
-
       self.pdResults = pd.read_sql_table("DATA", con=engine)
       self.pdResults = self.keepNumericOnly(self.pdResults)
-      print(self.pdResults)
 
   def keepNumericOnly(self, pdData):
-    # print(pdData.dtypes)
     pdData = pdData.select_dtypes(include=['number'])
-    # print('++++',pdData)
     return pdData
 
   def clearData(self, pdData):
-    for col in pdData.columns:
-      print(col)
     pdData = pdData.dropna()
-    print(pdData)
     return pdData
 
   # Flag = 1 -> Generate one json, Flag = 0 -> Generate multiple json
   def generateTests(self, testConf, flag):
-    # npTestConf = np.array(testConf)
     jsonList = []
     seed(1)
     if flag == 1:
@@ -54,26 +38,16 @@ class Test:
 
   def __runPCA(self, pdData):
     npTest = pdData.to_numpy()
-    print(npTest)
-    # print(npTest.shape[1])
+    
     pca = PCA()
     pca.fit(npTest)
     pcaev = pca.explained_variance_
     pcac = pca.components_
-
-    # In order to be desc: (-pcaev)
     arr1inds = (-pcaev).argsort()
     pcaevSorted = pcaev[arr1inds[::-1]]
     pcacSorted = pcac[arr1inds[::-1]]
-
-    # Rows Number
-    print('Rows = ',npTest.shape[0])
     self.rown = npTest.shape[0]
-    # Eigenvalues sorted desc
-    print('Explained Variance = ', pcaevSorted)
     self.pcaevSorted = pcaevSorted
-    # Eigenvectors sorted desc
-    print('Principal Components = ', pcacSorted)
     self.pcacSorted = pcacSorted
     return npTest.shape[0], pcaevSorted, pcacSorted
 
@@ -99,7 +73,6 @@ class Test:
       jsonString = jsonString + ","
     jsonString = jsonString[:-1]
     jsonString = jsonString + ']}'
-    print(jsonString)
     return jsonString
 
 
@@ -127,13 +100,4 @@ class Test:
         jsonString = jsonString + ","
     jsonString = jsonString[:-1]
     jsonString = jsonString + ']}'
-    print(jsonString)
     return jsonString
-# test = Test()
-# test.connectToDbAndLoadToPandas()
-# resultList = test.generateTests([[20,2], [30,1], [50, 3]],1)
-# myfile = open('test.txt', 'w')
-# for elem in resultList:
-#   myfile.write(elem)
-#   myfile.write("\n")
-# myfile.close()
