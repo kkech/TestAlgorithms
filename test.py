@@ -7,9 +7,6 @@ from random import seed
 from random import randint
 
 class Test:
-  """
-    blueprint for car
-  """
 
   def __init__(self):
       self.result = {"result": []}
@@ -26,7 +23,7 @@ class Test:
       print(self.pdResults)
 
   def clearData(self):
-    for col in self.pdResults.columns: 
+    for col in self.pdResults.columns:
       print(col)
     self.pdClearResults = self.pdResults.dropna()
     print(self.pdClearResults)
@@ -38,7 +35,7 @@ class Test:
     for elem in testConf:
       jsonList.append(self.__makeJson(self.pdClearResults.copy(), elem[0], elem[1]))
     return jsonList
-  
+
   def __runPCA(self, pdData):
     npTest = pdData.to_numpy()
     print(npTest)
@@ -84,5 +81,3 @@ class Test:
     jsonString = jsonString + ']}'
     print(jsonString)
     return jsonString
-
-
