@@ -1,0 +1,38 @@
+{
+    "result": [
+        {
+            "input": [
+                {
+                    "name": "y",
+                    "value": "Εδώ βάζεις ονόματα columns"
+                },
+                {
+                    "name": "pathology",
+                    "value": "dementia"
+                },
+                {
+                    "name": "dataset",
+                    "value": "adni, ppmi, edsd"
+                },
+                {
+                    "name": "filter",
+                    "value": ""
+                }
+            ],
+            "output": [
+                {
+                    "name": "n_obs",
+                    "value": "Αριθμός rows του input (αφού αφαιρέσεις τα nulls)"
+                },
+                {
+                    "name": "eigen_vals",
+                    "value": "Ιδιοτιμές sorted descending order"
+                },
+                {
+                    "name": "eigen_vecs",
+                    "value": "Ιδιοδιανύσματα sorted με βάση την αντίστοιχη ιδιοτιμή"
+                }
+            ]
+        }
+    ]
+}
