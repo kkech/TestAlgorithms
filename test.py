@@ -38,10 +38,10 @@ class Test:
     return pdData
 
   def clearData(self, pdData):
-    for col in pdData.columns:
-      print(col)
+    # for col in pdData.columns:
+    #   print(col)
     pdData = pdData.dropna()
-    print(pdData)
+    # print(pdData)
     return pdData
 
   # Flag = 1 -> Generate one json, Flag = 0 -> Generate multiple json
@@ -70,13 +70,13 @@ class Test:
 
   def __runPCA(self, pdData):
     npTest = pdData.to_numpy()
-    print(npTest)
+    # print(npTest)
     # print(npTest.shape[1])
     pca = PCA()
     pca.fit(npTest)
     pcaev = pca.explained_variance_
     pcac = pca.components_
-    print("===",pcaev)
+    # print("===",pcaev)
 
     # In order to be desc: (-pcaev)
     # arr1inds = (-pcaev).argsort()
@@ -126,6 +126,7 @@ class Test:
     for elem in testConfig:
       numOfExp = elem[0]
       variables = elem[1]
+      print("Batch completed")
       i = 0
       while (i < numOfExp):
         i = i + 1
@@ -157,14 +158,15 @@ class Test:
   def __makeJsonLr(self, pdData, pdDataY, testConfig):
     pdData = self.keepNumericOnly(pdData)
     jsonString = '{"result": ['
-    t = Template('{ "input": [{ "name": "x", "label": "x", "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty", "type": "column", "columnValuesSQLType": "real, integer", "columnValuesIsCategorical": "false", "value": "{{ columns }}", "valueNotBlank": true, "valueMultiple": true, "valueType": "string" }, { "name": "y", "label": "y", "desc": "A single variable from database. The variable should be Categorical with only two categories (i.e. Boolean). It cannot be empty.", "type": "column", "columnValuesSQLType": "text, integer", "columnValuesIsCategorical": "true", "value": "{{yColumns}}", "valueNotBlank": true, "valueMultiple": false, "valueType": "string" }, { "name": "pathology", "label": "pathology", "desc": "The name of the pathology that the dataset belongs to.", "type": "pathology", "value": "dementia", "valueNotBlank": true, "valueMultiple": false, "valueType": "string" }, { "name": "dataset", "label": "dataset", "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty", "type": "dataset", "value": "adni", "valueNotBlank": true, "valueMultiple": true, "valueType": "string" }, { "name": "filter", "label": "filter", "desc": "", "type": "filter", "value": "", "valueNotBlank": false, "valueMultiple": true, "valueType": "string" } ], "output": [{ "name": "params", "value": "{{params}}" }] }')
+    t = Template('{ "input": [{ "name": "x", "label": "x", "desc": "A list of variables from database. The variable should be Real, Integer. It cannot be empty", "type": "column", "columnValuesSQLType": "real, integer", "columnValuesIsCategorical": "false", "value": "{{ columns }}", "valueNotBlank": true, "valueMultiple": true, "valueType": "string" }, { "name": "y", "label": "y", "desc": "A single variable from database. The variable should be Categorical with only two categories (i.e. Boolean). It cannot be empty.", "type": "column", "columnValuesSQLType": "text, integer", "columnValuesIsCategorical": "true", "value": "{{yColumns}}", "valueNotBlank": true, "valueMultiple": false, "valueType": "string" }, { "name": "pathology", "label": "pathology", "desc": "The name of the pathology that the dataset belongs to.", "type": "pathology", "value": "dementia", "valueNotBlank": true, "valueMultiple": false, "valueType": "string" }, { "name": "dataset", "label": "dataset", "desc": "It contains the names of one or more datasets, in which the algorithm will be executed. It cannot be empty", "type": "dataset", "value": "adni", "valueNotBlank": true, "valueMultiple": true, "valueType": "string" }, { "name": "filter", "label": "filter", "desc": "", "type": "filter", "value": { "condition": "OR", "rules": [ { "id": "{{param1Label}}", "field": "{{param1Label}}", "operator": "equal", "value": "{{param1Value}}" }, { "id": "{{param2Label}}", "field": "{{param2Label}}", "operator": "equal", "value": "{{param2Value}}" } ], "valid": true }, "valueNotBlank": false, "valueMultiple": true, "valueType": "string" } ], "output": [{ "name": "params", "value": "{{params}}" }] }')
     for elem in testConfig:
       numOfExp = elem[0]
       variables = elem[1]
+      print("Batch completed")
       i = 0
       while (i < numOfExp):
         i = i + 1
-        print("****",i)
+        # print("****",i)
         tempData = pdData.copy()
         tempDataY = pdDataY.copy()
         while (len(tempData.columns) != variables):
@@ -172,30 +174,30 @@ class Test:
           tempData = tempData.drop(tempData.columns[dropColNum], axis=1)
         keepColNum = randint(0, len(tempDataY.columns) - 1)
         tempDataY = tempDataY.iloc[:, [keepColNum]]
-        print("++++")
-        print(tempDataY)
+        # print("++++")
+        # print(tempDataY)
         tempData[tempDataY.columns[0]] = tempDataY
-        print(tempData)
-        print("----")
+        # print(tempData)
+        # print("----")
         tmp = self.pdMetaData[self.pdMetaData['code'] == tempDataY.columns[0]]
-        print(tmp['enumerations'])
+        # print(tmp['enumerations'])
         enumerations = tmp['enumerations'].to_string(index=False).split(",")
         enumerations = [x.strip(' ') for x in enumerations]
-        print(enumerations)
+        # print(enumerations)
         while (len(enumerations) != 2):
           dropIndex = randint(0, len(enumerations) - 1)
           del enumerations[dropIndex]
-        print("||||")
-        print(enumerations)
-        print("||||")
+        # print("||||")
+        # print(enumerations)
+        # print("||||")
         tempData = tempData.loc[tempData[tempDataY.columns[0]].isin(enumerations)]
-        print(tempData)
-        print("||||----")
+        # print(tempData)
+        # print("||||----")
 
         tempData = self.clearData(tempData)
-        print(tempData)
+        # print(tempData)
 
-        print("!!!!!", tempData.nunique()[-1:][0] == 2)
+        # print("!!!!!", tempData.nunique()[-1:][0] == 2)
 
         if (tempData.empty) or (tempData.nunique()[-1:][0] != 2):
           i = i - 1
@@ -216,23 +218,23 @@ class Test:
         X = tempData.iloc[:, :-1]
         
         clf = LogisticRegression(random_state=0, solver='newton-cg', penalty='none').fit(X, y)
-        print("====")
-        print(clf.get_params())
-        print("====")
-        jsonString = jsonString + t.render(columns=columns, yColumns=enumString, params=clf.get_params())
+        # print("====")
+        # print(clf.get_params())
+        # print("====")
+        jsonString = jsonString + t.render(columns=columns, yColumns=tempDataY.columns[0],param1Label=tempDataY.columns[0],param1Value=enumerations[0],param2Label=tempDataY.columns[0],param2Value=enumerations[1], params=clf.get_params())
         jsonString = jsonString + ","
     jsonString = jsonString[:-1]
     jsonString = jsonString + ']}'
-    print(jsonString)
+    # print(jsonString)
     return jsonString
-test = Test()
-test.connectToDbAndLoadToPandas()
-resultList = test.generateLrTest([[20,2]],1)
-myfile = open('testLr.txt', 'w')
-for elem in resultList:
-  myfile.write(elem)
-  myfile.write("\n")
-myfile.close()
+# test = Test()
+# test.connectToDbAndLoadToPandas()
+# resultList = test.generateLrTest([[20,2]],1)
+# myfile = open('testLr.txt', 'w')
+# for elem in resultList:
+#   myfile.write(elem)
+#   myfile.write("\n")
+# myfile.close()
 
 
 # resultList = test.generatePcaTests([[20,2], [30,1]],1)
